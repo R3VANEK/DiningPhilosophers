@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <string>
 #include <vector>
+#include <thread>
 
 #include "Philosopher.h"
 using namespace std;
@@ -25,9 +26,13 @@ int main(int argc, char* argv[])
    
 
     vector<Philosopher> philosophers;
+    philosophers.reserve(philosophersCount);
 
     for (int i = 0; i < philosophersCount; i++) {
-        philosophers.push_back(Philosopher(i, i + 1, i + 2));
+        philosophers.emplace_back(i, i + 1, i + 2);
     }
+
+    this_thread::sleep_for(10000ms);
+    return 0;
 
 }

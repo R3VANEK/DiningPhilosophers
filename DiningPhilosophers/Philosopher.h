@@ -1,4 +1,5 @@
 #pragma once
+#include <thread>
 
 class Philosopher {
 
@@ -13,6 +14,7 @@ class Philosopher {
 	int forkRight;
 	STATE state;
 	
+	std::thread worker;
 
 public:
 	Philosopher(int id, int forkLeft, int forkRight);
