@@ -3,7 +3,11 @@
 #include <vector>
 #include <thread>
 
+
 #include "Philosopher.h"
+
+
+
 using namespace std;
 
 void clearScreen(int lines) {
@@ -27,10 +31,13 @@ int main(int argc, char* argv[])
         cout << endl << "Something went wrong with passing philosopher number, please try again";
         return 1;
     }
-   
+
 
     vector<Philosopher> philosophers;
+
     philosophers.reserve(philosophersCount);
+
+
 
     // initializing the philosophers and making sure
     // that no copying and slicing to the objects disturb their threads
