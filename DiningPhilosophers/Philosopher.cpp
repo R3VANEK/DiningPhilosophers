@@ -1,6 +1,8 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <iomanip>
+#include <sstream>
 #include "Philosopher.h"
 #include "Waiter.h"
 
@@ -28,18 +30,21 @@ void Philosopher::think() {
         this->starve();
 
         // Philosopher tries to pick up forks using the waiter
-        if (Philosopher::waiter->canPickUpForks(forkLeft, forkRight)) {
-            this->eat();
-            Philosopher::waiter->releaseForks(forkLeft, forkRight);
+        if (this->state == STARVING) {
+            if (Philosopher::waiter->pickUpForks(forkLeft, forkRight)) {
+                this->eat();
+                Philosopher::waiter->releaseForks(forkLeft, forkRight);
+            }
         }
-
-        this_thread::sleep_for(chrono::milliseconds(rand() % 2500 + 1));  // Random thinking time
+       
+        // Random thinking time
+        this_thread::sleep_for(chrono::milliseconds(rand() % 2500 + 1));
     }
 }
 
 void Philosopher::eat() {
     this->state = EATING;
-    cout << "id: " << this->id << " is eating..." << endl;
+    this->hungerLevel = 0;
 }
 
 void Philosopher::starve() {
@@ -47,7 +52,7 @@ void Philosopher::starve() {
 
     if (this->hungerLevel > Philosopher::MAX_HUNGER)
         this->state = DEAD;
-    else if (this->hungerLevel > Philosopher::MAX_HUNGER / 2)
+    else if (this->hungerLevel >= Philosopher::MAX_HUNGER / 2)
         this->state = STARVING;
 
     if (this->state == DEAD)
@@ -61,18 +66,22 @@ void Philosopher::join() {
 
 string Philosopher::convertState() {
     switch (this->state) {
-    case EATING: return "EATING";
-    case THINKING: return "THINKING";
-    case STARVING: return "STARVING";
-    case DEAD: return "DEAD";
-    default: return "UNKNOWN";
+        case EATING: return "EATING";
+        case THINKING: return "THINKING";
+        case STARVING: return "STARVING";
+        case DEAD: return "DEAD";
+        default: return "UNKNOWN";
     }
 }
 
-pair<int, int> Philosopher::getForks() {
-    return { this->forkLeft, this->forkRight };
-}
 
 string Philosopher::serialize() {
-    return "id: " + to_string(id) + "    | state: " + this->convertState() + "    | hunger: " + to_string(hungerLevel) + "/" + to_string(Philosopher::MAX_HUNGER) + "    |";
+    ostringstream output;
+
+    output << "id: " << setw(2) << id
+        << " | state: " << setw(9) << left << this->convertState()
+        << " | hunger: " << setw(2) << hungerLevel << "/" << Philosopher::MAX_HUNGER
+        << " |";
+
+    return output.str();
 }

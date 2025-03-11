@@ -26,21 +26,15 @@ class Philosopher {
 
 public:
 
-	// maybe in the future make silent death as an option?
 	Philosopher(int id, int forkLeft, int forkRight);
-	void eat();
-	void think();
 	void join();
-	pair<int, int> getForks();
 	string serialize();
 
 	static void setWaiter(Waiter* newWaiter);
 
-	bool operator < (const Philosopher& other) const {
-		return hungerLevel < other.hungerLevel;
-	}
-
 private:
 	string convertState();
 	void starve();
+	void think();
+	void eat();
 };

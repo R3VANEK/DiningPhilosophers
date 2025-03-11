@@ -19,6 +19,7 @@ int main(int argc, char* argv[])
 {
     int philosophersCount = NULL;
 
+    // getting params
     try {
         if (argc == 2)
             philosophersCount = stoi(argv[1]);
@@ -32,7 +33,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-
+    Waiter waiter(philosophersCount);
+    Philosopher::setWaiter(&waiter);
     vector<Philosopher> philosophers;
 
     philosophers.reserve(philosophersCount);
@@ -42,7 +44,7 @@ int main(int argc, char* argv[])
     // initializing the philosophers and making sure
     // that no copying and slicing to the objects disturb their threads
     for (int i = 0; i < philosophersCount; i++)
-        philosophers.emplace_back(i, i + 1, i + 2);
+        philosophers.emplace_back(i, i, (i + 1) % philosophersCount);
     
 
     // main loop for printing out all of the philosopher info

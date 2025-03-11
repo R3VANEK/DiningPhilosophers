@@ -1,22 +1,19 @@
 #pragma once
 #include <vector>
 #include <mutex>
-#include "Philosopher.h"
 
 using namespace std;
 
 class Waiter {
 
-    vector<mutex> forks;  // We need one mutex per fork
+    vector<mutex> forks;
 
 public:
-    Waiter(int philosopherCount);  // Constructor to initialize forks
-    Waiter(const Waiter&) = delete;  // Delete copy constructor
-    Waiter& operator=(const Waiter&) = delete;  // Delete copy assignment operator
+    Waiter(int philosopherCount); 
 
-    bool canPickUpForks(int leftFork, int rightFork);  // Method to check if forks can be picked up
-    void releaseForks(int leftFork, int rightFork);  // Method to release forks
+    bool pickUpForks(int leftFork, int rightFork);
+    void releaseForks(int leftFork, int rightFork);
 
 private:
-    mutex waiterMutex;  // Mutex for synchronizing access to the waiter itself
+    mutex waiterMutex;
 };

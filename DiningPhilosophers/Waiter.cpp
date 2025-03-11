@@ -1,14 +1,29 @@
 #include "Waiter.h"
 
 Waiter::Waiter(int philosopherCount) {
-    this->forks = vector<mutex>(philosopherCount);  // Initialize one mutex per philosopher (fork)
+
+    // Initialize one mutex per philosopher (fork)
+    this->forks = vector<mutex>(philosopherCount);  
 }
 
-bool Waiter::canPickUpForks(int leftFork, int rightFork) {
+bool Waiter::pickUpForks(int leftFork, int rightFork) {
     lock_guard<mutex> lock(waiterMutex);
 
-    // Try to lock both forks
-    return forks.at(leftFork).try_lock() && forks.at(rightFork).try_lock();
+    // try locking left fork
+    if (!forks.at(leftFork).try_lock()) {
+        return false;
+    }
+
+
+    // try the other one
+    // if it fails, unlock the first one
+    if (!forks.at(rightFork).try_lock()) {
+        forks.at(leftFork).unlock();
+        return false;
+    }
+
+    return true;
+
 }
 
 void Waiter::releaseForks(int leftFork, int rightFork) {
