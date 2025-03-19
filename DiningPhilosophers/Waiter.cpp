@@ -7,22 +7,12 @@ Waiter::Waiter(int philosopherCount) {
     this->forks = vector<mutex>(philosopherCount);  
 }
 
-bool Waiter::pickUpForks(int leftFork, int rightFork) {
+void Waiter::pickUpForks(int leftFork, int rightFork) {
     unique_lock<mutex> lock(waiterMutex);
 
-    // try locking left fork
-    if (!forks.at(leftFork).try_lock()) {
-        return false;
-    }
-
-    // try the other one
-    // if it fails, unlock the first one
-    if (!forks.at(rightFork).try_lock()) {
-        forks.at(leftFork).unlock();
-        return false;
-    }
-
-    return true;
+    condition.wait(lock, [&]() {
+        return forks[leftFork].try_lock() && forks[rightFork].try_lock();
+    });
 
 }
 

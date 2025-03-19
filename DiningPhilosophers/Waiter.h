@@ -12,7 +12,7 @@ class Waiter {
 public:
     Waiter(int philosopherCount); 
 
-    bool pickUpForks(int leftFork, int rightFork);
+    void pickUpForks(int leftFork, int rightFork);
     void releaseForks(int leftFork, int rightFork);
 
 private:

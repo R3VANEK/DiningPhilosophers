@@ -35,10 +35,10 @@ void Philosopher::think() {
 
         // Philosopher tries to pick up forks using the waiter
         if (this->state == STARVING) {
-            if (Philosopher::waiter->pickUpForks(forkLeft, forkRight)) {
-                this->eat();
-                Philosopher::waiter->releaseForks(forkLeft, forkRight);
-            }
+            Philosopher::waiter->pickUpForks(forkLeft, forkRight);
+            this->eat();
+            Philosopher::waiter->releaseForks(forkLeft, forkRight);
+           
         }
        
         // Random thinking time
