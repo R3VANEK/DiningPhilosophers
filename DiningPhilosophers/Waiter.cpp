@@ -1,4 +1,5 @@
 #include "Waiter.h"
+#include <condition_variable>
 
 Waiter::Waiter(int philosopherCount) {
 
@@ -7,13 +8,12 @@ Waiter::Waiter(int philosopherCount) {
 }
 
 bool Waiter::pickUpForks(int leftFork, int rightFork) {
-    lock_guard<mutex> lock(waiterMutex);
+    unique_lock<mutex> lock(waiterMutex);
 
     // try locking left fork
     if (!forks.at(leftFork).try_lock()) {
         return false;
     }
-
 
     // try the other one
     // if it fails, unlock the first one
@@ -27,9 +27,11 @@ bool Waiter::pickUpForks(int leftFork, int rightFork) {
 }
 
 void Waiter::releaseForks(int leftFork, int rightFork) {
-    lock_guard<mutex> lock(waiterMutex);
+    unique_lock<mutex> lock(waiterMutex);
 
     // Release the locks on both forks
     forks.at(leftFork).unlock();
     forks.at(rightFork).unlock();
+
+    this->condition.notify_all();
 }

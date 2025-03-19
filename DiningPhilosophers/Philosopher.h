@@ -1,6 +1,7 @@
 #pragma once
 #include <thread>
 #include <string>
+#include <random>
 #include "Waiter.h"
 
 using namespace std;
@@ -33,6 +34,7 @@ public:
 	static void setWaiter(Waiter* newWaiter);
 
 private:
+	static thread_local mt19937 rng;
 	string convertState();
 	void starve();
 	void think();

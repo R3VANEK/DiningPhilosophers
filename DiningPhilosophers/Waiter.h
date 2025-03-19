@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <mutex>
+#include <condition_variable>
 
 using namespace std;
 
@@ -16,4 +17,5 @@ public:
 
 private:
     mutex waiterMutex;
+    condition_variable condition;
 };

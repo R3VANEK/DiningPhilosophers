@@ -2,6 +2,7 @@
 #include <thread>
 #include <chrono>
 #include <iomanip>
+#include <random>   
 #include <sstream>
 #include "Philosopher.h"
 #include "Waiter.h"
@@ -10,6 +11,7 @@ using namespace std;
 
 const int Philosopher::MAX_HUNGER = 10;
 Waiter* Philosopher::waiter = nullptr;
+thread_local mt19937 Philosopher::rng(random_device{}());
 
 Philosopher::Philosopher(int id, int forkLeft, int forkRight) {
     this->id = id;
@@ -19,12 +21,14 @@ Philosopher::Philosopher(int id, int forkLeft, int forkRight) {
     this->hungerLevel = 0;
     this->worker = thread(&Philosopher::think, this);
 }
-
+    
 void Philosopher::setWaiter(Waiter* newWaiter) {
     Philosopher::waiter = newWaiter;
 }
 
 void Philosopher::think() {
+    uniform_int_distribution<int> sleepTime(1, 5000);
+
     while (true) {
         this->state = THINKING;
         this->starve();
@@ -38,7 +42,7 @@ void Philosopher::think() {
         }
        
         // Random thinking time
-        this_thread::sleep_for(chrono::milliseconds(rand() % 2500 + 1));
+        this_thread::sleep_for(chrono::milliseconds(sleepTime(this->rng)));
     }
 }
 

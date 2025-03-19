@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
         for (int i = 0; i < philosophersCount; i++)
             cout << philosophers[i].serialize() << endl;
 
-        this_thread::sleep_for(2s);
+        this_thread::sleep_for(0.5s);
         clearScreen(philosophersCount);
     }
 
